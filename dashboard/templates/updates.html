@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Обновления{% endblock %}
+{% block meta_description %}Ежемесячные отчёты отеля Камарумс: что случилось, что узнали, что дальше.{% endblock %}
+{% block canonical %}https://open.kamarooms.com/updates.html{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="tag">ОБНОВЛЕНИЯ</div>
+  <h1>Ежемесячный отчёт.</h1>
+  <p class="subtitle">
+    65% история, 35% цифры. Не наоборот. Таблицы есть на странице показателей.
+    Здесь — контекст, который за ними стоит.
+  </p>
+</div>
+
+{% for update in updates %}
+<a href="updates/{{ update.slug }}.html" class="update-card">
+  <div class="date">{{ update.month_ru }} {{ update.year }}</div>
+  <h3>{{ update.title }}</h3>
+  <p>{{ update.excerpt }}</p>
+</a>
+{% endfor %}
+
+{% if not updates %}
+<div class="coming-soon">
+  <div class="label">ПЕРВЫЙ ВЫПУСК — АПРЕЛЬ 2026. ПОДПИШИТЕСЬ.</div>
+  <p>
+    Мы выложили свои цифры в интернет и теперь пишем первый отчёт.
+    Он будет честным. Возможно, неловким. Точно не скучным.
+  </p>
+</div>
+
+<!-- Sample Narrative: April 2026 Preview -->
+<div style="margin-top: 48px;">
+  <div class="narrative">
+    <p style="font-size: 18px; color: var(--text); line-height: 1.8; font-weight: 500;">
+      Мы выложили свой RevPAR в интернет. Конкуренты считают нас сумасшедшими.
+      Они, вероятно, правы. Но мы всё равно это сделали.
+    </p>
+
+    <h2>Цифры месяца</h2>
+    <table class="kpi-table">
+      <thead>
+        <tr>
+          <th>Показатель</th>
+          <th>Значение</th>
+          <th>Изменение</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Загрузка</td>
+          <td>{{ latest_occupancy }}%</td>
+          <td class="{{ 'change-up' if occ_change >= 0 else 'change-down' }}">
+            {{ '+' if occ_change >= 0 else '' }}{{ occ_change }} пп
+          </td>
+        </tr>
+        <tr>
+          <td>RevPAR</td>
+          <td>{{ latest_revpar }}</td>
+          <td class="{{ 'change-up' if revpar_change >= 0 else 'change-down' }}">
+            {{ '+' if revpar_change >= 0 else '' }}{{ revpar_change }}%
+          </td>
+        </tr>
+        <tr>
+          <td>ADR</td>
+          <td>{{ latest_adr }}</td>
+          <td class="{{ 'change-up' if adr_change >= 0 else 'change-down' }}">
+            {{ '+' if adr_change >= 0 else '' }}{{ adr_change }}%
+          </td>
+        </tr>
+        <tr>
+          <td>Booking.com</td>
+          <td>{{ ratings.booking_com }} / 10</td>
+          <td style="color: var(--text-muted);">—</td>
+        </tr>
+        <tr>
+          <td>Яндекс</td>
+          <td>{{ ratings.yandex }} / 5</td>
+          <td style="color: var(--text-muted);">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Что случилось</h2>
+    <p>
+      Март. Мы нажали «опубликовать» на страницу, которая показывает нашу реальную загрузку,
+      реальный RevPAR и реальные отзывы. Не «около». Не «примерно». Точные цифры из учётной системы.
+    </p>
+    <p>
+      Зачем? Потому что вся гостиничная индустрия прячет данные за NDA и паролями.
+      Мы решили: если цифры хорошие — глупо их скрывать. Если плохие — ещё глупее делать вид, что их нет.
+    </p>
+
+    <h2>Что узнали</h2>
+    <p>
+      Самое сложное в прозрачности — не показать хорошие цифры.
+      Самое сложное — решить, что делать с плохими.
+    </p>
+    <p>
+      Январская загрузка 53% — это не провал. Это Набережные Челны в январе.
+      Контекст решает всё. И именно поэтому здесь 65% текста и только 35% цифр.
+    </p>
+
+    <h2>Что дальше</h2>
+    <p>
+      В апреле добавим интерактивные графики и начнём отслеживать время решения проблем гостей.
+      Если вам что-то не понравилось в номере — мы хотим знать, за сколько минут это исправили.
+      И опубликовать это число. Даже если оно нам не понравится.
+    </p>
+  </div>
+</div>
+{% endif %}
+
+<div class="dark-section">
+  <h3>Это первый выпуск. Он не идеальный.</h3>
+  <p>
+    Мы только учимся рассказывать о себе вслух. Следующий будет лучше.
+    А пока — если у вас есть вопрос, который должен быть в отчёте,
+    <a href="https://t.me/kamarooms" style="color: var(--green); text-decoration: underline;">напишите нам</a>.
+  </p>
+</div>
+{% endblock %}

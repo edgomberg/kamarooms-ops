@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Показатели — Камарумс</title>
+<meta name="description" content="Загрузка, RevPAR, средний тариф — помесячная динамика отеля Камарумс за 2025 год.">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Камарумс — Открытый отель">
+<meta property="og:description" content="Реальные цифры отеля. Без фильтров.">
+<meta property="og:image" content="https://open.kamarooms.com/assets/kamarooms-homepage-screenshot.png">
+<meta property="og:site_name" content="Камарумс /open">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="ru" href="https://open.kamarooms.com/performance.html">
+<link rel="alternate" hreflang="x-default" href="https://open.kamarooms.com/">
+<link rel="icon" href="assets/favicon.ico">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<style>
+  /* Stolzl — Kamarooms brand font (from kamarooms.com Tilda CDN) */
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild6561-3431-4337-b366-313134633462/Stolzl-Thin.woff') format('woff'); font-weight: 100; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild6561-6337-4461-b933-303864333239/Stolzl-Light.woff') format('woff'); font-weight: 300; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3461-6461-4435-a464-626338343365/Stolzl-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3531-3636-4136-b336-326137663366/Stolzl-Medium.woff') format('woff'); font-weight: 500; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3334-6234-4266-b234-333036306634/Stolzl-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+
+  /*
+   * Design system: Kamarooms /Open
+   * Palette + font sourced from kamarooms.com
+   * Voice: Buffer structure + Honest Greens warmth + dBrand edge (7/10)
+   */
+  :root {
+    /* Kamarooms brand palette */
+    --bg: #FAFAF7;
+    --bg-warm: #CEC7B7;
+    --bg-dark: #31313B;
+    --bg-charcoal: #1E1D1B;
+    --card: #FFFFFF;
+    --card-hover: #F5F3EF;
+    --border: #E5E0D8;
+    --border-dark: #3A3A42;
+
+    /* Text */
+    --text: #1E1D1B;
+    --text-secondary: #685E59;
+    --text-muted: #7F7D7A;
+    --text-on-dark: #E8E5E0;
+    --text-muted-dark: #9E9B97;
+
+    /* Accents */
+    --green: #4FD215;
+    --green-dim: rgba(79, 210, 21, 0.12);
+    --green-dark: #3BA510;
+    --gold: #D4A853;
+    --coral: #FF8562;
+    --red: #D94040;
+    --blue: #4A90D9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Stolzl', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── Navigation ── */
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    background: rgba(250, 250, 247, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .nav-brand span {
+    color: var(--green);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--card-hover); }
+  .nav-links a.active { color: var(--green-dark); background: var(--green-dim); font-weight: 700; }
+
+  /* ── Hero cards ── */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .hero-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .hero-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30, 29, 27, 0.08);
+  }
+  .hero-card .label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .hero-card .value {
+    font-size: 40px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    color: var(--text);
+  }
+  .hero-card .context {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  /* ── Section cards (hub teasers) ── Honest Greens asymmetric card feel */
+  .section-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: transform 0.15s, box-shadow 0.2s, border-color 0.15s;
+  }
+  .section-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30, 29, 27, 0.08);
+    border-color: var(--bg-warm);
+  }
+  .section-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .section-card .tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .section-card h3 {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .section-card .arrow {
+    color: var(--green);
+    font-size: 22px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .section-card:hover .arrow { transform: translateX(6px); }
+  .section-card p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Page headers — Honest Greens 3-layer: tag + massive headline + body ── */
+  .page-header {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .page-header .tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+  }
+  .page-header h1 {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .page-header .subtitle {
+    color: var(--text-secondary);
+    font-size: 16px;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+  .page-header .freshness {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── Chart sections ── */
+  .chart-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .chart-section h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .chart-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .chart-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .chart-tabs button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    min-height: 44px;
+  }
+  .chart-tabs button.active {
+    background: var(--bg-charcoal);
+    color: white;
+    border-color: var(--bg-charcoal);
+    font-weight: 700;
+  }
+  .chart-tabs button:hover:not(.active) {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+  .time-range select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .chart-wrapper {
+    position: relative;
+    height: 320px;
+  }
+
+  /* ── Metric cards ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .metric-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30, 29, 27, 0.06);
+  }
+  .metric-card .label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+  .metric-card .value {
+    font-size: 32px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .metric-card .sublabel {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .metric-card.placeholder .value { color: var(--bg-warm); }
+
+  /* ── Rating badges ── */
+  .ratings-row {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .rating-badge { text-align: center; }
+  .rating-badge .platform {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .rating-badge .score {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .rating-badge .scale {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* ── Fun fact cards — screenshot-worthy ── */
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .fact-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .fact-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30, 29, 27, 0.08);
+  }
+  .fact-card .emoji { font-size: 36px; margin-bottom: 12px; }
+  .fact-card .fact-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .fact-card .fact-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .fact-card .fact-context {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* ── Update cards ── */
+  .update-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .update-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30, 29, 27, 0.06);
+  }
+  .update-card .date {
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+  .update-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .update-card p { color: var(--text-secondary); font-size: 14px; }
+
+  /* ── Narrative content ── */
+  .narrative { max-width: 680px; }
+  .narrative h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 40px 0 16px;
+  }
+  .narrative p {
+    font-size: 16px;
+    margin-bottom: 16px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+  .narrative .kpi-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 14px;
+  }
+  .narrative .kpi-table th,
+  .narrative .kpi-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .narrative .kpi-table th {
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .narrative .kpi-table .change-up { color: var(--green-dark); font-weight: 600; }
+  .narrative .kpi-table .change-down { color: var(--red); font-weight: 600; }
+
+  /* ── Dark sections (alternating rhythm like kamarooms.com) ── */
+  .dark-section {
+    background: var(--bg-dark);
+    color: var(--text-on-dark);
+    border-radius: 20px;
+    padding: 48px 40px;
+    margin: 40px 0;
+  }
+  .dark-section h3 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: white;
+  }
+  .dark-section p {
+    color: var(--text-muted-dark);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+  .dark-section p + p { margin-top: 12px; }
+  .dark-section .accent { color: var(--green); }
+
+  /* ── Warm section (beige band) ── */
+  .warm-section {
+    background: var(--bg-warm);
+    color: var(--text);
+    border-radius: 20px;
+    padding: 48px 40px;
+    margin: 40px 0;
+  }
+  .warm-section h3 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .warm-section p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* ── Callout box ── */
+  .callout {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    border-radius: 0 12px 12px 0;
+    padding: 24px 28px;
+    margin: 24px 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+  .callout strong { color: var(--text); }
+
+  /* ── Placeholder state ── */
+  .coming-soon {
+    text-align: center;
+    padding: 48px 24px;
+    background: var(--card);
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+  .coming-soon .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    color: var(--green-dark);
+  }
+  .coming-soon p {
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+  footer .freshness {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  footer p { color: var(--text-muted); font-size: 13px; }
+  footer a { color: var(--green-dark); text-decoration: none; font-weight: 500; }
+  footer a:hover { text-decoration: underline; }
+  footer .tagline {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .page-header h1 { font-size: 28px; }
+    .hero-card .value { font-size: 32px; }
+    .dark-section, .warm-section { padding: 32px 24px; border-radius: 16px; }
+    .section-card { padding: 24px; }
+    .chart-wrapper { height: 260px; }
+  }
+
+  @media (max-width: 1024px) and (min-width: 641px) {
+    h1 { font-size: 36px; }
+    .hero-grid { grid-template-columns: repeat(2, 1fr); }
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .fact-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+
+</style>
+
+
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/kamarooms-logo.svg" alt="Камарумс" style="height: 22px; display: inline-block; vertical-align: middle; margin-right: 6px;">
+      <span>/open</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" >Главная</a>
+      <a href="story.html" >История</a>
+      <a href="performance.html" class="active">Показатели</a>
+      <a href="guests.html" >Гости</a>
+      <a href="team.html" >Команда</a>
+      <a href="pulse.html" >Пульс</a>
+      <a href="updates.html" >Обновления</a>
+      <a href="handbook.html" >Справочник</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+<div class="page-header">
+  <div class="tag">ПОКАЗАТЕЛИ</div>
+  <h1>Другие отели прячут RevPAR за NDA. Вот наш.</h1>
+  <p class="subtitle">
+    Загрузка, доход на номер, средний тариф. Не средние по рынку — наши. Настоящие.
+  </p>
+  <p class="freshness">Данные по состоянию на ноябрь 2025</p>
+</div>
+
+<!-- KPI Summary Cards -->
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="label">RevPAR (среднее)</div>
+    <div class="value">4 664 ₽</div>
+    <div class="sublabel">Доход на доступный номер</div>
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Выручка номерного фонда ÷ Доступные номеро-ночи</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Загрузка (среднее)</div>
+    <div class="value">67.6%</div>
+    <div class="sublabel">11 мес. 2025</div>
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Проданные номеро-ночи ÷ Доступные × 100%</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">ADR (среднее)</div>
+    <div class="value">6 783 ₽</div>
+    <div class="sublabel">Средний тариф за номер</div>
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Выручка номерного фонда ÷ Проданные номеро-ночи</div>
+  </div>
+</div>
+
+<!-- Monthly Trend Chart -->
+<div class="chart-section">
+  <h3>Помесячная динамика — 2025</h3>
+  <div class="chart-controls">
+    <div class="chart-tabs" id="perfTabs">
+      <button class="active" onclick="showMetric('occupancy', this)">Загрузка</button>
+      <button onclick="showMetric('revpar', this)">RevPAR</button>
+      <button onclick="showMetric('adr', this)">ADR</button>
+      <button onclick="showMetric('revenue', this)">Выручка</button>
+    </div>
+    <div class="time-range">
+      <select id="timeRange" onchange="updateTimeRange(this.value)">
+        <option value="6">6 месяцев</option>
+        <option value="12" selected>12 месяцев</option>
+        <option value="0">Всё время</option>
+      </select>
+    </div>
+  </div>
+  <div class="chart-wrapper">
+    <canvas id="perfChart"></canvas>
+  </div>
+</div>
+
+<!-- RevPAR Index (RGI) -->
+<div class="dark-section">
+  <h3>RevPAR Index (RGI)</h3>
+  <p style="margin-bottom: 24px;">
+    RGI показывает, как наш доход на номер соотносится с конкурентами.
+    RGI &gt; 100 означает, что мы зарабатываем больше, чем средний отель в городе.
+  </p>
+  <div class="coming-soon" style="background: transparent; border-color: var(--border-dark);">
+    <div class="label" style="color: var(--green);">Скоро</div>
+    <p style="color: var(--text-muted-dark);">
+      Собираем данные конкурентного набора. Первый RGI — июнь 2026.
+    </p>
+  </div>
+</div>
+
+<!-- Year-over-Year Comparison -->
+<div class="chart-section">
+  <h3>Динамика по годам</h3>
+  <div class="chart-wrapper">
+    <canvas id="historyChart"></canvas>
+  </div>
+</div>
+
+
+<footer>
+  <div class="freshness">Данные по состоянию на ноябрь 2025</div>
+  <p>
+    <a href="https://kamarooms.com">kamarooms.com</a> · Набережные Челны · 108 номеров · 4★
+  </p>
+  <p class="tagline">
+    Ни один другой отель этого не делает. В этом и суть.
+  </p>
+</footer>
+</div>
+
+
+<script>
+const ALL_DATA = {
+  labels: ["\u042f\u043d\u0432", "\u0424\u0435\u0432", "\u041c\u0430\u0440", "\u0410\u043f\u0440", "\u041c\u0430\u0439", "\u0418\u044e\u043d", "\u0418\u044e\u043b", "\u0410\u0432\u0433", "\u0421\u0435\u043d", "\u041e\u043a\u0442", "\u041d\u043e\u044f"],
+  occupancy: { data: [53, 72, 66, 59, 58, 69, 72, 76, 77, 74, 68], label: 'Загрузка (%)', color: '#D4A853', suffix: '%' },
+  revpar: { data: [3443, 5041, 4508, 3986, 4070, 4754, 4891, 5135, 5414, 5268, 4793], label: 'RevPAR (₽)', color: '#4FD215', suffix: ' ₽' },
+  adr: { data: [6505, 6413, 6786, 6771, 6678, 6711, 6767, 6792, 6996, 7112, 7084], label: 'ADR (₽)', color: '#FF8562', suffix: ' ₽' },
+  revenue: { data: [11.9, 14.4, 15.9, 13.3, 13.9, 16.0, 16.8, 17.6, 18.3, 18.5, 16.1], label: 'Выручка (млн ₽)', color: '#4A90D9', suffix: ' млн ₽' }
+};
+
+let perfChart = null;
+let currentMetric = 'occupancy';
+let currentRange = 12;
+
+function sliceData(metric, range) {
+  const ds = ALL_DATA[metric];
+  const labels = range === 0 ? ALL_DATA.labels : ALL_DATA.labels.slice(-range);
+  const data = range === 0 ? ds.data : ds.data.slice(-range);
+  return { labels, data, ds };
+}
+
+function createPerfChart(metric, range) {
+  const { labels, data, ds } = sliceData(metric, range);
+  const ctx = document.getElementById('perfChart').getContext('2d');
+
+  if (perfChart) perfChart.destroy();
+
+  perfChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: ds.label,
+        data: data,
+        borderColor: ds.color,
+        backgroundColor: ds.color + '20',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        pointBackgroundColor: ds.color,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1E1D1B',
+          titleColor: '#E8E5E0',
+          bodyColor: '#E8E5E0',
+          borderColor: '#3A3A42',
+          borderWidth: 1,
+          callbacks: {
+            label: (ctx) => ctx.parsed.y.toLocaleString('ru-RU') + ds.suffix
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: '#E5E0D8' },
+          ticks: { color: '#7F7D7A' }
+        },
+        y: {
+          grid: { color: '#E5E0D8' },
+          ticks: {
+            color: '#7F7D7A',
+            callback: (v) => v.toLocaleString('ru-RU')
+          }
+        }
+      }
+    }
+  });
+}
+
+function showMetric(metric, btn) {
+  currentMetric = metric;
+  document.querySelectorAll('#perfTabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  createPerfChart(metric, currentRange);
+}
+
+function updateTimeRange(range) {
+  currentRange = parseInt(range);
+  createPerfChart(currentMetric, currentRange);
+}
+
+// Historical chart
+function createHistoryChart() {
+  const ctx = document.getElementById('historyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2025"],
+      datasets: [
+        {
+          type: 'line',
+          label: 'Рентабельность (%)',
+          data: [34.6, 28.8, 42.7, 40.5, 38.9, 27.1, 31.9, 35.4, 21.0],
+          borderColor: '#FF8562',
+          backgroundColor: 'transparent',
+          borderWidth: 3,
+          pointRadius: 5,
+          pointBackgroundColor: [34.6, 28.8, 42.7, 40.5, 38.9, 27.1, 31.9, 35.4, 21.0].map(v => v < 25 ? '#FF8562' : '#4FD215'),
+          tension: 0.2,
+          yAxisID: 'y1',
+          order: 1
+        },
+        {
+          type: 'bar',
+          label: 'Выручка (млн ₽)',
+          data: [34.8, 43.6, 50.1, 81.8, 102.3, 65.1, 104.2, 117.1, 172.7],
+          backgroundColor: '#4A90D920',
+          borderColor: '#4A90D9',
+          borderWidth: 1,
+          yAxisID: 'y',
+          order: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: {
+          labels: { color: '#7F7D7A' }
+        },
+        tooltip: {
+          backgroundColor: '#1E1D1B',
+          titleColor: '#E8E5E0',
+          bodyColor: '#E8E5E0',
+          borderColor: '#3A3A42',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: '#E5E0D8' },
+          ticks: { color: '#7F7D7A' }
+        },
+        y: {
+          position: 'left',
+          grid: { color: '#E5E0D8' },
+          ticks: { color: '#7F7D7A', callback: (v) => v.toFixed(0) + 'M' },
+          title: { display: true, text: 'Выручка (млн ₽)', color: '#7F7D7A' }
+        },
+        y1: {
+          position: 'right',
+          grid: { display: false },
+          ticks: { color: '#7F7D7A', callback: (v) => v + '%' },
+          title: { display: true, text: 'Рентабельность %', color: '#7F7D7A' },
+          min: 0,
+          max: 50
+        }
+      }
+    }
+  });
+}
+
+// Init
+createPerfChart('occupancy', 12);
+createHistoryChart();
+</script>
+
+</body>
+</html>

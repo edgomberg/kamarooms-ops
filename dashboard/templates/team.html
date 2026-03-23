@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Команда{% endblock %}
+{% block meta_description %}Культура команды отеля Камарумс: текучка, языки, философия оплаты. Без корпоративного буллшита.{% endblock %}
+{% block canonical %}https://open.kamarooms.com/team.html{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="tag">КОМАНДА</div>
+  <h1>70-80% текучки в год.<br>Норма индустрии.</h1>
+  <p class="subtitle">
+    Мы не говорим «у нас всё по-другому». Мы собираемся это доказать данными.
+    Пока — вот что мы знаем и чего ещё не знаем.
+  </p>
+  <p class="freshness">Данные по состоянию на {{ data_month_ru }} {{ data_year }}</p>
+</div>
+
+<!-- Team Size -->
+<div class="metric-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 40px;">
+  <div class="metric-card" style="text-align: center;">
+    <div class="label">Сотрудников</div>
+    <div class="value">~125</div>
+    <div class="sublabel">отель + SPA + ресторан</div>
+  </div>
+  <div class="metric-card" style="text-align: center;">
+    <div class="label">Номеров на сотрудника</div>
+    <div class="value">0.86</div>
+    <div class="sublabel">108 номеров / 125 человек</div>
+  </div>
+</div>
+
+<!-- Culture Metrics -->
+<h2 style="font-size: 20px; margin-bottom: 20px;">Культурные метрики</h2>
+
+<div class="metric-grid">
+  <div class="metric-card placeholder">
+    <div class="label">Средний стаж</div>
+    <div class="value">—</div>
+    <div class="sublabel">Данные от HR · апрель 2026</div>
+  </div>
+  <div class="metric-card placeholder">
+    <div class="label">Удовлетворённость</div>
+    <div class="value">—</div>
+    <div class="sublabel">Анонимный опрос · Q2 2026</div>
+  </div>
+  <div class="metric-card placeholder">
+    <div class="label">Внутренние повышения</div>
+    <div class="value">—</div>
+    <div class="sublabel">Данные от HR · апрель 2026</div>
+  </div>
+</div>
+
+<!-- No fines — the bold claim -->
+<div class="dark-section">
+  <h3>Штрафов нет. Вообще.</h3>
+  <p>
+    В гостиничной индустрии штрафы — стандартная практика.
+    Разбил стакан — минус из зарплаты. Опоздал — штраф.
+    Это дёшево, просто и абсолютно не работает.
+  </p>
+  <p>
+    У нас ошибки решаются обучением. Не наказанием.
+    Звучит как лозунг? Попробуйте найти другой отель, который это
+    <span class="accent">публично заявляет</span>.
+  </p>
+</div>
+
+<!-- Languages — warm section -->
+<div class="warm-section">
+  <h3>Языки команды</h3>
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px;">
+    <div style="background: rgba(255,255,255,0.5); padding: 14px 24px; border-radius: 10px; font-size: 15px; font-weight: 500;">
+      Русский <span style="color: var(--text-secondary); font-weight: 400;">· все</span>
+    </div>
+    <div style="background: rgba(255,255,255,0.5); padding: 14px 24px; border-radius: 10px; font-size: 15px; font-weight: 500;">
+      Татарский <span style="color: var(--text-secondary); font-weight: 400;">· часть команды</span>
+    </div>
+    <div style="background: rgba(255,255,255,0.5); padding: 14px 24px; border-radius: 10px; font-size: 15px; font-weight: 400;">
+      Английский <span style="color: var(--text-secondary); font-weight: 400;">· базовый</span>
+    </div>
+  </div>
+</div>
+
+<!-- Compensation Philosophy -->
+<h2 style="font-size: 20px; margin-bottom: 20px;">Философия оплаты</h2>
+
+<div style="font-size: 15px; line-height: 1.8; color: var(--text-secondary); max-width: 640px; margin-bottom: 32px;">
+  <p style="margin-bottom: 16px;">
+    Индивидуальные зарплаты — личное дело каждого сотрудника. Мы их не публикуем.
+  </p>
+  <p style="margin-bottom: 16px;">
+    <strong style="color: var(--text);">Рынок + стаж + результат.</strong>
+    Базовая ставка привязана к рынку Набережных Челнов.
+    Стаж и результаты влияют на рост. Всё.
+  </p>
+  <p>
+    <strong style="color: var(--text);">Без «мотивационных схем».</strong>
+    Просто понятная система. Делаешь хорошо — растёшь. Без сюрпризов.
+  </p>
+</div>
+
+<!-- Candidate-facing callout -->
+<div class="callout">
+  <strong>Вы это читаете перед собеседованием?</strong>
+  Хорошо. Именно для этого мы это написали.
+  Большинство гостей не заходят на эту страницу — зато соискатели заходят.
+  И мы хотим, чтобы лучшие специалисты в гостиничной индустрии знали,
+  как мы относимся к своим людям, до того как придут на интервью.
+</div>
+{% endblock %}

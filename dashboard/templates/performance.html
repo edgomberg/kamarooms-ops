@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Показатели{% endblock %}
+{% block meta_description %}Загрузка, RevPAR, средний тариф — помесячная динамика отеля Камарумс за {{ data_year }} год.{% endblock %}
+{% block canonical %}https://open.kamarooms.com/performance.html{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="tag">ПОКАЗАТЕЛИ</div>
+  <h1>Другие отели прячут RevPAR за NDA. Вот наш.</h1>
+  <p class="subtitle">
+    Загрузка, доход на номер, средний тариф. Не средние по рынку — наши. Настоящие.
+  </p>
+  <p class="freshness">Данные по состоянию на {{ data_month_ru }} {{ data_year }}</p>
+</div>
+
+<!-- KPI Summary Cards -->
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="label">RevPAR (среднее)</div>
+    <div class="value">{{ revpar_avg }}</div>
+    <div class="sublabel">Доход на доступный номер</div>
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Выручка номерного фонда ÷ Доступные номеро-ночи</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Загрузка (среднее)</div>
+    <div class="value">{{ occupancy_avg }}%</div>
+    <div class="sublabel">{{ months_count }} мес. {{ data_year }}</div>
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Проданные номеро-ночи ÷ Доступные × 100%</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">ADR (среднее)</div>
+    <div class="value">{{ adr_avg }}</div>
+    <div class="sublabel">Средний тариф за номер</div>
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Выручка номерного фонда ÷ Проданные номеро-ночи</div>
+  </div>
+</div>
+
+<!-- Monthly Trend Chart -->
+<div class="chart-section">
+  <h3>Помесячная динамика — {{ data_year }}</h3>
+  <div class="chart-controls">
+    <div class="chart-tabs" id="perfTabs">
+      <button class="active" onclick="showMetric('occupancy', this)">Загрузка</button>
+      <button onclick="showMetric('revpar', this)">RevPAR</button>
+      <button onclick="showMetric('adr', this)">ADR</button>
+      <button onclick="showMetric('revenue', this)">Выручка</button>
+    </div>
+    <div class="time-range">
+      <select id="timeRange" onchange="updateTimeRange(this.value)">
+        <option value="6">6 месяцев</option>
+        <option value="12" selected>12 месяцев</option>
+        <option value="0">Всё время</option>
+      </select>
+    </div>
+  </div>
+  <div class="chart-wrapper">
+    <canvas id="perfChart"></canvas>
+  </div>
+</div>
+
+<!-- RevPAR Index (RGI) -->
+<div class="dark-section">
+  <h3>RevPAR Index (RGI)</h3>
+  <p style="margin-bottom: 24px;">
+    RGI показывает, как наш доход на номер соотносится с конкурентами.
+    RGI &gt; 100 означает, что мы зарабатываем больше, чем средний отель в городе.
+  </p>
+  <div class="coming-soon" style="background: transparent; border-color: var(--border-dark);">
+    <div class="label" style="color: var(--green);">Скоро</div>
+    <p style="color: var(--text-muted-dark);">
+      Собираем данные конкурентного набора. Первый RGI — июнь 2026.
+    </p>
+  </div>
+</div>
+
+<!-- Year-over-Year Comparison -->
+<div class="chart-section">
+  <h3>Динамика по годам</h3>
+  <div class="chart-wrapper">
+    <canvas id="historyChart"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const ALL_DATA = {
+  labels: {{ labels_ru | tojson }},
+  occupancy: { data: {{ occupancy_data | tojson }}, label: 'Загрузка (%)', color: '#D4A853', suffix: '%' },
+  revpar: { data: {{ revpar_data | tojson }}, label: 'RevPAR (₽)', color: '#4FD215', suffix: ' ₽' },
+  adr: { data: {{ adr_data | tojson }}, label: 'ADR (₽)', color: '#FF8562', suffix: ' ₽' },
+  revenue: { data: {{ revenue_data | tojson }}, label: 'Выручка (млн ₽)', color: '#4A90D9', suffix: ' млн ₽' }
+};
+
+let perfChart = null;
+let currentMetric = 'occupancy';
+let currentRange = 12;
+
+function sliceData(metric, range) {
+  const ds = ALL_DATA[metric];
+  const labels = range === 0 ? ALL_DATA.labels : ALL_DATA.labels.slice(-range);
+  const data = range === 0 ? ds.data : ds.data.slice(-range);
+  return { labels, data, ds };
+}
+
+function createPerfChart(metric, range) {
+  const { labels, data, ds } = sliceData(metric, range);
+  const ctx = document.getElementById('perfChart').getContext('2d');
+
+  if (perfChart) perfChart.destroy();
+
+  perfChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: ds.label,
+        data: data,
+        borderColor: ds.color,
+        backgroundColor: ds.color + '20',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        pointBackgroundColor: ds.color,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1E1D1B',
+          titleColor: '#E8E5E0',
+          bodyColor: '#E8E5E0',
+          borderColor: '#3A3A42',
+          borderWidth: 1,
+          callbacks: {
+            label: (ctx) => ctx.parsed.y.toLocaleString('ru-RU') + ds.suffix
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: '#E5E0D8' },
+          ticks: { color: '#7F7D7A' }
+        },
+        y: {
+          grid: { color: '#E5E0D8' },
+          ticks: {
+            color: '#7F7D7A',
+            callback: (v) => v.toLocaleString('ru-RU')
+          }
+        }
+      }
+    }
+  });
+}
+
+function showMetric(metric, btn) {
+  currentMetric = metric;
+  document.querySelectorAll('#perfTabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  createPerfChart(metric, currentRange);
+}
+
+function updateTimeRange(range) {
+  currentRange = parseInt(range);
+  createPerfChart(currentMetric, currentRange);
+}
+
+// Historical chart
+function createHistoryChart() {
+  const ctx = document.getElementById('historyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ hist_years | tojson }},
+      datasets: [
+        {
+          type: 'line',
+          label: 'Рентабельность (%)',
+          data: {{ hist_margins | tojson }},
+          borderColor: '#FF8562',
+          backgroundColor: 'transparent',
+          borderWidth: 3,
+          pointRadius: 5,
+          pointBackgroundColor: {{ hist_margins | tojson }}.map(v => v < 25 ? '#FF8562' : '#4FD215'),
+          tension: 0.2,
+          yAxisID: 'y1',
+          order: 1
+        },
+        {
+          type: 'bar',
+          label: 'Выручка (млн ₽)',
+          data: {{ hist_revenue | tojson }},
+          backgroundColor: '#4A90D920',
+          borderColor: '#4A90D9',
+          borderWidth: 1,
+          yAxisID: 'y',
+          order: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: {
+          labels: { color: '#7F7D7A' }
+        },
+        tooltip: {
+          backgroundColor: '#1E1D1B',
+          titleColor: '#E8E5E0',
+          bodyColor: '#E8E5E0',
+          borderColor: '#3A3A42',
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: '#E5E0D8' },
+          ticks: { color: '#7F7D7A' }
+        },
+        y: {
+          position: 'left',
+          grid: { color: '#E5E0D8' },
+          ticks: { color: '#7F7D7A', callback: (v) => v.toFixed(0) + 'M' },
+          title: { display: true, text: 'Выручка (млн ₽)', color: '#7F7D7A' }
+        },
+        y1: {
+          position: 'right',
+          grid: { display: false },
+          ticks: { color: '#7F7D7A', callback: (v) => v + '%' },
+          title: { display: true, text: 'Рентабельность %', color: '#7F7D7A' },
+          min: 0,
+          max: 50
+        }
+      }
+    }
+  });
+}
+
+// Init
+createPerfChart('occupancy', 12);
+createHistoryChart();
+</script>
+{% endblock %}

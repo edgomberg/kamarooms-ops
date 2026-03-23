@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Гости{% endblock %}
+{% block meta_description %}Рейтинги отеля Камарумс на Booking.com, Яндекс и 2ГИС. Три платформы. Ноль фильтров.{% endblock %}
+{% block canonical %}https://open.kamarooms.com/guests.html{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="tag">ГОСТИ</div>
+  <h1>Три платформы. Ноль фильтров.</h1>
+  <p class="subtitle">
+    Мы показываем рейтинги отдельно по каждой площадке, потому что складывать
+    десятибалльную шкалу с пятибалльной — это как складывать килограммы с километрами.
+    Технически можно. Практически — бессмысленно.
+  </p>
+  <p class="freshness">Данные по состоянию на {{ data_month_ru }} {{ data_year }}</p>
+</div>
+
+<!-- Rating Cards — premium feel, platform-specific accent colors -->
+<div class="metric-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 48px;">
+  <div class="metric-card" style="text-align: center; border-top: 4px solid var(--gold);">
+    <div class="label">Booking.com</div>
+    <div class="value" style="font-size: 56px; color: var(--gold); letter-spacing: -1px;">{{ ratings.booking_com }}</div>
+    <div class="sublabel">из 10 · отзывов: 500+</div>
+  </div>
+  <div class="metric-card" style="text-align: center; border-top: 4px solid var(--coral);">
+    <div class="label">Яндекс</div>
+    <div class="value" style="font-size: 56px; color: var(--coral); letter-spacing: -1px;">{{ ratings.yandex }}</div>
+    <div class="sublabel">из 5 · «Хорошее место 2026»</div>
+  </div>
+  <div class="metric-card" style="text-align: center; border-top: 4px solid var(--green);">
+    <div class="label">2ГИС</div>
+    <div class="value" style="font-size: 56px; color: var(--green); letter-spacing: -1px;">{{ ratings.two_gis }}</div>
+    <div class="sublabel">из 5 · 392 отзыва · «Лучший отель 2025»</div>
+  </div>
+</div>
+
+<!-- Transparency statement — dark section -->
+<div class="dark-section">
+  <h3>Мы не модерируем. Не отвечаем шаблонами.<br>Не просим удалить.</h3>
+  <p>
+    Каждый отзыв остаётся как есть. Хороший — спасибо.
+    Плохой — разбираем внутри. Публично не оправдываемся.
+  </p>
+  <p>
+    Отели любят говорить «мы ценим обратную связь».
+    Мы просто <span class="accent">показываем цифры</span> и молчим.
+  </p>
+</div>
+
+<!-- Additional Guest Metrics -->
+<h2 style="font-size: 20px; margin-bottom: 20px; margin-top: 8px;">Другие метрики</h2>
+
+<div class="metric-grid">
+  <div class="metric-card placeholder">
+    <div class="label">Повторные гости</div>
+    <div class="value">—</div>
+    <div class="sublabel">Данные с апреля 2026 · из PMS</div>
+  </div>
+  <div class="metric-card placeholder">
+    <div class="label">Прямые бронирования</div>
+    <div class="value">—</div>
+    <div class="sublabel">Данные с апреля 2026 · из Travelline</div>
+  </div>
+  <div class="metric-card placeholder">
+    <div class="label">Время ответа в Telegram</div>
+    <div class="value">—</div>
+    <div class="sublabel">Замер начнётся в апреле 2026</div>
+  </div>
+  <div class="metric-card placeholder">
+    <div class="label">Выполнение спецзапросов</div>
+    <div class="value">—</div>
+    <div class="sublabel">Опрос гостей · Q2 2026</div>
+  </div>
+</div>
+
+<!-- Dashes callout -->
+<div class="callout">
+  <strong>Про прочерки.</strong>
+  Прочерк — это тоже форма прозрачности. Мы не ставим красивые выдуманные цифры.
+  Если данных нет — прочерк. Когда подключим системы отслеживания — цифры появятся.
+  До тех пор — честный прочерк лучше нечестной восьмёрки.
+</div>
+{% endblock %}

@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "hotel": "Kamarooms",
+    "entity": "ООО Пульс",
+    "rooms": 108,
+    "location": "Naberezhnye Chelny, Tatarstan",
+    "currency": "RUB",
+    "updated": "2026-03-23"
+  },
+  "core_kpis": [
+    {
+      "id": "revpar",
+      "name": "RevPAR",
+      "name_ru": "Доход на номер",
+      "unit": "RUB",
+      "source": "PMS + Travelline",
+      "current": null,
+      "target": null,
+      "public": true,
+      "formula": "ADR × Occupancy"
+    },
+    {
+      "id": "occupancy",
+      "name": "Occupancy %",
+      "name_ru": "Загрузка",
+      "unit": "%",
+      "source": "PMS",
+      "current": null,
+      "target": null,
+      "public": true,
+      "formula": "rooms_sold / rooms_available"
+    },
+    {
+      "id": "adr",
+      "name": "ADR",
+      "name_ru": "Средний тариф",
+      "unit": "RUB",
+      "source": "PMS + Travelline",
+      "current": null,
+      "target": null,
+      "public": true,
+      "formula": "room_revenue / rooms_sold"
+    },
+    {
+      "id": "direct_booking_pct",
+      "name": "Direct Booking %",
+      "name_ru": "Доля прямых бронирований",
+      "unit": "%",
+      "source": "Travelline",
+      "current": null,
+      "target": null,
+      "public": true,
+      "formula": "direct_bookings / total_bookings"
+    },
+    {
+      "id": "guest_rating",
+      "name": "Guest Rating (composite)",
+      "name_ru": "Рейтинг гостей",
+      "unit": "score",
+      "source": "Booking.com + Yandex + 2GIS",
+      "current": {
+        "booking_com": 9.4,
+        "yandex": 5.0,
+        "two_gis": 4.8
+      },
+      "target": "maintain",
+      "public": true
+    }
+  ],
+  "operational_kpis": [
+    {
+      "id": "goppar",
+      "name": "GOPPAR",
+      "name_ru": "Валовая операционная прибыль на номер",
+      "unit": "RUB",
+      "source": "1C + PMS",
+      "current": null,
+      "target": null,
+      "public": false,
+      "formula": "gross_operating_profit / rooms_available"
+    },
+    {
+      "id": "labor_cost_pct",
+      "name": "Labor Cost % of Revenue",
+      "name_ru": "Доля ФОТ в выручке",
+      "unit": "%",
+      "source": "1C payroll",
+      "current": null,
+      "target": null,
+      "public": false,
+      "formula": "total_payroll / total_revenue"
+    },
+    {
+      "id": "ota_commission_pct",
+      "name": "OTA Commission %",
+      "name_ru": "Комиссия ОТА",
+      "unit": "%",
+      "source": "Travelline",
+      "current": null,
+      "target": null,
+      "public": false,
+      "formula": "ota_commissions / ota_revenue"
+    },
+    {
+      "id": "energy_cost_per_room",
+      "name": "Energy Cost / Room",
+      "name_ru": "Затраты на энергию на номер",
+      "unit": "RUB",
+      "source": "1C utilities",
+      "current": null,
+      "target": null,
+      "public": false,
+      "formula": "energy_costs / rooms_available"
+    },
+    {
+      "id": "revenue_per_employee",
+      "name": "Revenue / Employee",
+      "name_ru": "Выручка на сотрудника",
+      "unit": "RUB",
+      "source": "1C + PMS",
+      "current": null,
+      "target": null,
+      "public": false,
+      "formula": "total_revenue / headcount"
+    }
+  ],
+  "historical_monthly": {},
+  "historical_annual": []
+}

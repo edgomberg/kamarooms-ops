@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Открытый отель{% endblock %}
+{% block meta_description %}Первый отель в мире, который публикует настоящие показатели. Загрузка, рейтинги, цены — всё на виду.{% endblock %}
+{% block canonical %}https://open.kamarooms.com/{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "Камарумс",
+  "alternateName": "Kamarooms",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Набережные Челны",
+    "addressRegion": "Республика Татарстан",
+    "addressCountry": "RU"
+  },
+  "starRating": {
+    "@type": "Rating",
+    "ratingValue": "4"
+  },
+  "numberOfRooms": 108,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ ratings.booking_com }}",
+    "bestRating": "10",
+    "ratingCount": "392"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- ═══ HERO — Honest Greens 3-layer: tag → massive headline → body ═══ -->
+<div style="text-align: center; padding: 72px 0 48px;">
+  <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--green-dark); margin-bottom: 16px;">
+    КАМАРУМС /OPEN
+  </div>
+  <h1 style="font-size: 52px; font-weight: 800; letter-spacing: 1px; line-height: 1.05; margin-bottom: 20px;">
+    ОТКРЫТЫЙ ОТЕЛЬ.
+  </h1>
+  <p style="color: var(--text-secondary); font-size: 17px; max-width: 520px; margin: 0 auto; line-height: 1.6;">
+    Все отели публикуют маркетинг. Мы публикуем данные.<br>
+    Вы сейчас читаете дашборд, которого не должно существовать.
+  </p>
+</div>
+
+<!-- ═══ HERO METRICS ═══ -->
+<div class="hero-grid">
+  <div class="hero-card">
+    <div class="label">Загрузка</div>
+    <div class="value">{{ occupancy_avg }}%</div>
+    <div class="context">среднее за {{ months_count }} мес. {{ data_year }}</div>
+  </div>
+  <div class="hero-card" style="grid-column: span 2;">
+    <div class="label">Рейтинг гостей</div>
+    <div class="ratings-row" style="margin-top: 12px;">
+      <div class="rating-badge">
+        <div class="platform">Booking.com</div>
+        <div class="score">{{ ratings.booking_com }}</div>
+        <div class="scale">/ 10</div>
+      </div>
+      <div class="rating-badge">
+        <div class="platform">Яндекс</div>
+        <div class="score">{{ ratings.yandex }}</div>
+        <div class="scale">/ 5</div>
+      </div>
+      <div class="rating-badge">
+        <div class="platform">2ГИС</div>
+        <div class="score">{{ ratings.two_gis }}</div>
+        <div class="scale">/ 5</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="label">Wi-Fi</div>
+    <div class="value">{{ wifi_speed }}</div>
+    <div class="context">Мбит/с · скачивание</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">RevPAR</div>
+    <div class="value">{{ '{:,.0f}'.format(avg_revpar) }} ₽</div>
+    <div class="context">доход на доступный номер</div>
+  </div>
+</div>
+
+<!-- ═══ SECTION TEASERS — white cards ═══ -->
+<a href="performance.html" class="section-card">
+  <div class="tag">ПОКАЗАТЕЛИ</div>
+  <div class="section-card-header">
+    <h3>Настоящие цифры</h3>
+    <span class="arrow">&rarr;</span>
+  </div>
+  <p>Загрузка, RevPAR, средний тариф. Включая январь. Особенно январь.</p>
+</a>
+
+<a href="guests.html" class="section-card">
+  <div class="tag">ГОСТИ</div>
+  <div class="section-card-header">
+    <h3>Три платформы. Ноль модерации.</h3>
+    <span class="arrow">&rarr;</span>
+  </div>
+  <p>Booking {{ ratings.booking_com }}. Яндекс {{ ratings.yandex }}. 2ГИС {{ ratings.two_gis }}. Мы их не контролируем — вы контролируете.</p>
+</a>
+
+<!-- ═══ DARK SECTION — "Why We Share This" ═══ -->
+<div class="dark-section">
+  <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--green); margin-bottom: 12px;">
+    ЗАЧЕМ ЭТО ВСЁ
+  </div>
+  <h3>Все отели прячут свои цифры.<br>Мы попробовали. Скучно.</h3>
+  <p>
+    Загрузка, тарифы, рейтинги — вся индустрия держит это за NDA и закрытыми отчётами. Как будто если гость узнает реальную загрузку — случится катастрофа.
+  </p>
+  <p>
+    Ничего не случилось. Зато теперь вы точно знаете, куда едете.
+  </p>
+  <p style="margin-top: 20px;">
+    <span class="accent">108 номеров. Набережные Челны. С 2009 года.</span>
+  </p>
+</div>
+
+<a href="story.html" class="section-card" style="border-left: 3px solid var(--coral);">
+  <div class="tag" style="color: var(--coral);">ИСТОРИЯ</div>
+  <div class="section-card-header">
+    <h3>Мы горели. Буквально.</h3>
+    <span class="arrow">&rarr;</span>
+  </div>
+  <p>Пожар 2023 года. 72 человека эвакуированы за 7 минут. Реконструкция за 90 млн ₽. И решение показать миру все цифры.</p>
+</a>
+
+<!-- ═══ MORE SECTION TEASERS — white cards ═══ -->
+<a href="team.html" class="section-card">
+  <div class="tag">КОМАНДА</div>
+  <div class="section-card-header">
+    <h3>В индустрии текучка 73%. У нас — нет.</h3>
+    <span class="arrow">&rarr;</span>
+  </div>
+  <p>Средний стаж, удовлетворённость, языки. Люди, которые застилают вам кровать — не расходный материал.</p>
+</a>
+
+<a href="pulse.html" class="section-card">
+  <div class="tag">ПУЛЬС</div>
+  <div class="section-card-header">
+    <h3>Бесполезная, но честная статистика</h3>
+    <span class="arrow">&rarr;</span>
+  </div>
+  <p>Самый популярный номер. Самый заказываемый завтрак. Сколько подушек мы взбили в этом месяце. Серьёзно.</p>
+</a>
+
+<!-- ═══ WARM SECTION — sign-off ═══ -->
+<div class="warm-section">
+  <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 12px;">
+    ОБНОВЛЕНИЯ
+  </div>
+  <h3>Ежемесячный отчёт</h3>
+  <p>
+    Что случилось, что мы узнали, что дальше. Без корпоративного языка, без купюр. Просто — как есть.
+  </p>
+  <p style="margin-top: 20px;">
+    <a href="updates.html" style="color: var(--text); font-weight: 700; text-decoration: underline; text-underline-offset: 4px;">
+      Читать за {{ data_month_ru }} {{ data_year }} &rarr;
+    </a>
+  </p>
+</div>
+
+{% endblock %}

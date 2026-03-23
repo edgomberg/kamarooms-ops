@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пульс — Камарумс</title>
+<meta name="description" content="Забавные факты об отеле Камарумс: самый популярный номер, самый заказываемый завтрак и сколько подушек мы взбили.">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Камарумс — Открытый отель">
+<meta property="og:description" content="Реальные цифры отеля. Без фильтров.">
+<meta property="og:image" content="https://open.kamarooms.com/assets/kamarooms-homepage-screenshot.png">
+<meta property="og:site_name" content="Камарумс /open">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="ru" href="https://open.kamarooms.com/pulse.html">
+<link rel="alternate" hreflang="x-default" href="https://open.kamarooms.com/">
+<link rel="icon" href="assets/favicon.ico">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<style>
+  /* Stolzl — Kamarooms brand font (from kamarooms.com Tilda CDN) */
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild6561-3431-4337-b366-313134633462/Stolzl-Thin.woff') format('woff'); font-weight: 100; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild6561-6337-4461-b933-303864333239/Stolzl-Light.woff') format('woff'); font-weight: 300; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3461-6461-4435-a464-626338343365/Stolzl-Regular.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3531-3636-4136-b336-326137663366/Stolzl-Medium.woff') format('woff'); font-weight: 500; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3334-6234-4266-b234-333036306634/Stolzl-Bold.woff') format('woff'); font-weight: 700; font-style: normal; font-display: swap; }
+
+  /*
+   * Design system: Kamarooms /Open
+   * Palette + font sourced from kamarooms.com
+   * Voice: Buffer structure + Honest Greens warmth + dBrand edge (7/10)
+   */
+  :root {
+    /* Kamarooms brand palette */
+    --bg: #FAFAF7;
+    --bg-warm: #CEC7B7;
+    --bg-dark: #31313B;
+    --bg-charcoal: #1E1D1B;
+    --card: #FFFFFF;
+    --card-hover: #F5F3EF;
+    --border: #E5E0D8;
+    --border-dark: #3A3A42;
+
+    /* Text */
+    --text: #1E1D1B;
+    --text-secondary: #685E59;
+    --text-muted: #7F7D7A;
+    --text-on-dark: #E8E5E0;
+    --text-muted-dark: #9E9B97;
+
+    /* Accents */
+    --green: #4FD215;
+    --green-dim: rgba(79, 210, 21, 0.12);
+    --green-dark: #3BA510;
+    --gold: #D4A853;
+    --coral: #FF8562;
+    --red: #D94040;
+    --blue: #4A90D9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Stolzl', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── Navigation ── */
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    background: rgba(250, 250, 247, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .nav-brand span {
+    color: var(--green);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--card-hover); }
+  .nav-links a.active { color: var(--green-dark); background: var(--green-dim); font-weight: 700; }
+
+  /* ── Hero cards ── */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .hero-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .hero-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30, 29, 27, 0.08);
+  }
+  .hero-card .label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .hero-card .value {
+    font-size: 40px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    color: var(--text);
+  }
+  .hero-card .context {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  /* ── Section cards (hub teasers) ── Honest Greens asymmetric card feel */
+  .section-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: transform 0.15s, box-shadow 0.2s, border-color 0.15s;
+  }
+  .section-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30, 29, 27, 0.08);
+    border-color: var(--bg-warm);
+  }
+  .section-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .section-card .tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .section-card h3 {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .section-card .arrow {
+    color: var(--green);
+    font-size: 22px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .section-card:hover .arrow { transform: translateX(6px); }
+  .section-card p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Page headers — Honest Greens 3-layer: tag + massive headline + body ── */
+  .page-header {
+    padding: 56px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .page-header .tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+  }
+  .page-header h1 {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .page-header .subtitle {
+    color: var(--text-secondary);
+    font-size: 16px;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+  .page-header .freshness {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── Chart sections ── */
+  .chart-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .chart-section h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .chart-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .chart-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .chart-tabs button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    min-height: 44px;
+  }
+  .chart-tabs button.active {
+    background: var(--bg-charcoal);
+    color: white;
+    border-color: var(--bg-charcoal);
+    font-weight: 700;
+  }
+  .chart-tabs button:hover:not(.active) {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+  .time-range select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .chart-wrapper {
+    position: relative;
+    height: 320px;
+  }
+
+  /* ── Metric cards ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .metric-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30, 29, 27, 0.06);
+  }
+  .metric-card .label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+  .metric-card .value {
+    font-size: 32px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .metric-card .sublabel {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .metric-card.placeholder .value { color: var(--bg-warm); }
+
+  /* ── Rating badges ── */
+  .ratings-row {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .rating-badge { text-align: center; }
+  .rating-badge .platform {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .rating-badge .score {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .rating-badge .scale {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* ── Fun fact cards — screenshot-worthy ── */
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .fact-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .fact-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30, 29, 27, 0.08);
+  }
+  .fact-card .emoji { font-size: 36px; margin-bottom: 12px; }
+  .fact-card .fact-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .fact-card .fact-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .fact-card .fact-context {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* ── Update cards ── */
+  .update-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .update-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30, 29, 27, 0.06);
+  }
+  .update-card .date {
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+  .update-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .update-card p { color: var(--text-secondary); font-size: 14px; }
+
+  /* ── Narrative content ── */
+  .narrative { max-width: 680px; }
+  .narrative h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 40px 0 16px;
+  }
+  .narrative p {
+    font-size: 16px;
+    margin-bottom: 16px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+  .narrative .kpi-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 14px;
+  }
+  .narrative .kpi-table th,
+  .narrative .kpi-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .narrative .kpi-table th {
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .narrative .kpi-table .change-up { color: var(--green-dark); font-weight: 600; }
+  .narrative .kpi-table .change-down { color: var(--red); font-weight: 600; }
+
+  /* ── Dark sections (alternating rhythm like kamarooms.com) ── */
+  .dark-section {
+    background: var(--bg-dark);
+    color: var(--text-on-dark);
+    border-radius: 20px;
+    padding: 48px 40px;
+    margin: 40px 0;
+  }
+  .dark-section h3 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: white;
+  }
+  .dark-section p {
+    color: var(--text-muted-dark);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+  .dark-section p + p { margin-top: 12px; }
+  .dark-section .accent { color: var(--green); }
+
+  /* ── Warm section (beige band) ── */
+  .warm-section {
+    background: var(--bg-warm);
+    color: var(--text);
+    border-radius: 20px;
+    padding: 48px 40px;
+    margin: 40px 0;
+  }
+  .warm-section h3 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .warm-section p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+
+  /* ── Callout box ── */
+  .callout {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    border-radius: 0 12px 12px 0;
+    padding: 24px 28px;
+    margin: 24px 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+  .callout strong { color: var(--text); }
+
+  /* ── Placeholder state ── */
+  .coming-soon {
+    text-align: center;
+    padding: 48px 24px;
+    background: var(--card);
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+  .coming-soon .label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    color: var(--green-dark);
+  }
+  .coming-soon p {
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+  footer .freshness {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  footer p { color: var(--text-muted); font-size: 13px; }
+  footer a { color: var(--green-dark); text-decoration: none; font-weight: 500; }
+  footer a:hover { text-decoration: underline; }
+  footer .tagline {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .page-header h1 { font-size: 28px; }
+    .hero-card .value { font-size: 32px; }
+    .dark-section, .warm-section { padding: 32px 24px; border-radius: 16px; }
+    .section-card { padding: 24px; }
+    .chart-wrapper { height: 260px; }
+  }
+
+  @media (max-width: 1024px) and (min-width: 641px) {
+    h1 { font-size: 36px; }
+    .hero-grid { grid-template-columns: repeat(2, 1fr); }
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .fact-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+
+</style>
+
+
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/kamarooms-logo.svg" alt="Камарумс" style="height: 22px; display: inline-block; vertical-align: middle; margin-right: 6px;">
+      <span>/open</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" >Главная</a>
+      <a href="story.html" >История</a>
+      <a href="performance.html" >Показатели</a>
+      <a href="guests.html" >Гости</a>
+      <a href="team.html" >Команда</a>
+      <a href="pulse.html" class="active">Пульс</a>
+      <a href="updates.html" >Обновления</a>
+      <a href="handbook.html" >Справочник</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+<div class="page-header">
+  <div class="tag">ПУЛЬС</div>
+  <h1>Цифры, которые не попадают в&nbsp;отчёты.</h1>
+  <p class="subtitle">
+    RevPAR — это для инвесторов. А здесь — то, что делает отель отелем.
+    Блины, подушки, коридоры и немного статистики, которую никто не просил.
+  </p>
+  <p class="freshness">Обновляется ежемесячно · ноябрь 2025</p>
+</div>
+
+<div class="fact-grid">
+  
+  <div class="fact-card">
+    <div class="emoji">🛏️</div>
+    <div class="fact-value">Люкс Бизнес</div>
+    <div class="fact-label">Самый популярный тип номера</div>
+    
+    <div class="fact-context">42% бронирований</div>
+    
+  </div>
+  
+  <div class="fact-card">
+    <div class="emoji">🥐</div>
+    <div class="fact-value">Блины</div>
+    <div class="fact-label">Самый заказываемый завтрак</div>
+    
+    <div class="fact-context">Каждое утро. Без исключений.</div>
+    
+  </div>
+  
+  <div class="fact-card">
+    <div class="emoji">📦</div>
+    <div class="fact-value">—</div>
+    <div class="fact-label">Забытых вещей вернули</div>
+    
+    <div class="fact-context">Считаем с апреля 2026</div>
+    
+  </div>
+  
+  <div class="fact-card">
+    <div class="emoji">⏰</div>
+    <div class="fact-value">6:00</div>
+    <div class="fact-label">Самый ранний чекин</div>
+    
+    <div class="fact-context">Потому что почему бы и нет</div>
+    
+  </div>
+  
+  <div class="fact-card">
+    <div class="emoji">🧹</div>
+    <div class="fact-value">~2 км</div>
+    <div class="fact-label">Коридоров убираем ежедневно</div>
+    
+    <div class="fact-context">5 этажей, 108 номеров</div>
+    
+  </div>
+  
+  <div class="fact-card">
+    <div class="emoji">🛋️</div>
+    <div class="fact-value">—</div>
+    <div class="fact-label">Подушек взбито в этом месяце</div>
+    
+    <div class="fact-context">Считаем с апреля 2026</div>
+    
+  </div>
+  
+
+  
+</div>
+
+<div class="warm-section">
+  <h3>Знаете факт, который мы упустили?</h3>
+  <p>
+    Если вы были у нас и заметили что-то, что заслуживает места на этой странице —
+    напишите в <a href="https://t.me/kamarooms" style="color: var(--text); font-weight: 700; text-decoration: underline;">Telegram</a>.
+    Лучшие факты попадают сюда. С указанием автора, если хотите славы.
+  </p>
+</div>
+
+<div class="dark-section">
+  <h3>Скриншотьте. Делитесь. Мы не против.</h3>
+  <p>Мы даже немного надеемся на это.</p>
+  <p>
+    Ни один другой отель не публикует, сколько блинов съели его гости.
+    <span class="accent">В этом и суть.</span>
+  </p>
+</div>
+
+
+<footer>
+  <div class="freshness">Данные по состоянию на ноябрь 2025</div>
+  <p>
+    <a href="https://kamarooms.com">kamarooms.com</a> · Набережные Челны · 108 номеров · 4★
+  </p>
+  <p class="tagline">
+    Ни один другой отель этого не делает. В этом и суть.
+  </p>
+</footer>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Пульс{% endblock %}
+{% block meta_description %}Забавные факты об отеле Камарумс: самый популярный номер, самый заказываемый завтрак и сколько подушек мы взбили.{% endblock %}
+{% block canonical %}https://open.kamarooms.com/pulse.html{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="tag">ПУЛЬС</div>
+  <h1>Цифры, которые не попадают в&nbsp;отчёты.</h1>
+  <p class="subtitle">
+    RevPAR — это для инвесторов. А здесь — то, что делает отель отелем.
+    Блины, подушки, коридоры и немного статистики, которую никто не просил.
+  </p>
+  <p class="freshness">Обновляется ежемесячно · {{ data_month_ru }} {{ data_year }}</p>
+</div>
+
+<div class="fact-grid">
+  {% for fact in fun_facts %}
+  <div class="fact-card">
+    <div class="emoji">{{ fact.emoji }}</div>
+    <div class="fact-value">{{ fact.value }}</div>
+    <div class="fact-label">{{ fact.label }}</div>
+    {% if fact.context %}
+    <div class="fact-context">{{ fact.context }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  {% if not fun_facts %}
+  <!-- Placeholder facts — replaced by real data when available -->
+  <div class="fact-card">
+    <div class="emoji">🥞</div>
+    <div class="fact-value">~1 200</div>
+    <div class="fact-label">блинов в месяц</div>
+    <div class="fact-context">Самая заказываемая позиция на завтраке. Каждый день. Без исключений.</div>
+  </div>
+  <div class="fact-card">
+    <div class="emoji">🛏️</div>
+    <div class="fact-value">~4 300</div>
+    <div class="fact-label">подушек взбито</div>
+    <div class="fact-context">Горничные не считают. Мы посчитали за них.</div>
+  </div>
+  <div class="fact-card">
+    <div class="emoji">🏃</div>
+    <div class="fact-value">~2 км</div>
+    <div class="fact-label">длина всех коридоров</div>
+    <div class="fact-context">Горничная за смену проходит это раза четыре. Марафон каждую неделю.</div>
+  </div>
+  <div class="fact-card">
+    <div class="emoji">☕</div>
+    <div class="fact-value">~3 500</div>
+    <div class="fact-label">чашек кофе</div>
+    <div class="fact-context">Половина — гости. Вторая половина — наша команда на утренней планёрке.</div>
+  </div>
+  <div class="fact-card">
+    <div class="emoji">🏆</div>
+    <div class="fact-value">Люкс Бизнес</div>
+    <div class="fact-label">самый бронируемый номер</div>
+    <div class="fact-context">Командировочные знают, что берут. Каждый раз один и тот же.</div>
+  </div>
+  <div class="fact-card">
+    <div class="emoji">🧴</div>
+    <div class="fact-value">~6 000</div>
+    <div class="fact-label">мини-шампуней</div>
+    <div class="fact-context">Некоторые гости забирают с собой. Мы понимаем.</div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="warm-section">
+  <h3>Знаете факт, который мы упустили?</h3>
+  <p>
+    Если вы были у нас и заметили что-то, что заслуживает места на этой странице —
+    напишите в <a href="https://t.me/kamarooms" style="color: var(--text); font-weight: 700; text-decoration: underline;">Telegram</a>.
+    Лучшие факты попадают сюда. С указанием автора, если хотите славы.
+  </p>
+</div>
+
+<div class="dark-section">
+  <h3>Скриншотьте. Делитесь. Мы не против.</h3>
+  <p>Мы даже немного надеемся на это.</p>
+  <p>
+    Ни один другой отель не публикует, сколько блинов съели его гости.
+    <span class="accent">В этом и суть.</span>
+  </p>
+</div>
+{% endblock %}
