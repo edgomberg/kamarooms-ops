@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Камарумс: Реальность</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<style>
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild6561-3431-4337-b366-313134633462/Stolzl-Thin.woff') format('woff'); font-weight: 100; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild6561-6337-4461-b933-303864333239/Stolzl-Light.woff') format('woff'); font-weight: 300; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3461-6461-4435-a464-626338343365/Stolzl-Regular.woff') format('woff'); font-weight: 400; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3531-3636-4136-b336-326137663366/Stolzl-Medium.woff') format('woff'); font-weight: 500; font-display: swap; }
+  @font-face { font-family: 'Stolzl'; src: url('https://static.tildacdn.com/tild3334-6234-4266-b234-333036306634/Stolzl-Bold.woff') format('woff'); font-weight: 700; font-display: swap; }
+
+  :root {
+    --bg: #FAFAF7;
+    --bg-dark: #31313B;
+    --bg-charcoal: #1E1D1B;
+    --card: #FFFFFF;
+    --border: #E5E0D8;
+    --text: #1E1D1B;
+    --text-secondary: #685E59;
+    --text-muted: #7F7D7A;
+    --text-on-dark: #E8E5E0;
+    --green: #4FD215;
+    --green-dim: rgba(79, 210, 21, 0.12);
+    --gold: #D4A853;
+    --coral: #FF8562;
+    --red: #D94040;
+    --blue: #4A90D9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Stolzl', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ── Slide System ── */
+  .slide {
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    position: relative;
+  }
+  .slide.active { display: flex; }
+
+  .slide.dark {
+    background: var(--bg-charcoal);
+    color: var(--text-on-dark);
+  }
+  .slide.accent {
+    background: var(--bg-dark);
+    color: var(--text-on-dark);
+  }
+
+  /* ── Typography ── */
+  .slide-title {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 32px;
+    max-width: 900px;
+    text-align: center;
+  }
+  .slide-subtitle {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.4;
+    max-width: 700px;
+    text-align: center;
+    opacity: 0.85;
+  }
+  .big-number {
+    font-size: 120px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .big-number.green { color: var(--green); }
+  .big-number.gold { color: var(--gold); }
+  .big-number.coral { color: var(--coral); }
+  .big-number.red { color: var(--red); }
+
+  .metric-label {
+    font-size: 20px;
+    font-weight: 400;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* ── Cards and grids ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 900px;
+    width: 100%;
+  }
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .dark .metric-card {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.1);
+  }
+  .metric-card .value {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .metric-card .label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+  .dark .metric-card .label { color: var(--text-on-dark); opacity: 0.6; }
+
+  /* ── Question slides ── */
+  .question-text {
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1.3;
+    max-width: 800px;
+    text-align: center;
+  }
+  .question-number {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--coral);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+  .question-answer {
+    font-size: 24px;
+    font-weight: 300;
+    margin-top: 32px;
+    opacity: 0.5;
+  }
+
+  /* ── Gap table ── */
+  .gap-table {
+    border-collapse: collapse;
+    max-width: 800px;
+    width: 100%;
+    font-size: 18px;
+  }
+  .gap-table th, .gap-table td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .gap-table th {
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.6;
+  }
+  .gap-table .status-have { color: var(--green); }
+  .gap-table .status-calc { color: var(--gold); }
+  .gap-table .status-gap { color: var(--coral); }
+  .gap-table tfoot td {
+    font-weight: 700;
+    font-size: 20px;
+    border-top: 2px solid rgba(255,255,255,0.3);
+    padding-top: 18px;
+  }
+
+  /* ── Ownership list ── */
+  .ownership-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 860px;
+    width: 100%;
+  }
+  .owner-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .owner-card .name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--gold);
+  }
+  .owner-card .metrics {
+    font-size: 15px;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  /* ── Chart container ── */
+  .chart-wrap {
+    max-width: 800px;
+    width: 100%;
+    height: 350px;
+    margin-top: 24px;
+  }
+
+  /* ── Section marker ── */
+  .section-marker {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 32px;
+    opacity: 0.5;
+  }
+  .section-marker.a { color: var(--green); opacity: 1; }
+  .section-marker.b { color: var(--coral); opacity: 1; }
+  .section-marker.c { color: var(--blue); opacity: 1; }
+
+  /* ── Navigation ── */
+  .nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(30,29,27,0.9);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 100;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+  .nav-bar .progress {
+    height: 3px;
+    background: var(--green);
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.3s;
+  }
+  .nav-bar .slide-counter { font-weight: 500; }
+  .nav-hint { opacity: 0.4; }
+
+  /* ── Quote block ── */
+  .quote {
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    max-width: 700px;
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 40px;
+    opacity: 0.7;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .slide { padding: 40px 24px; }
+    .slide-title { font-size: 32px; }
+    .big-number { font-size: 72px; }
+    .metric-grid { grid-template-columns: 1fr; }
+    .ownership-grid { grid-template-columns: 1fr; }
+    .question-text { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 0: Title
+     ═══════════════════════════════════════════════ -->
+<div class="slide dark active" id="s0">
+  <div class="slide-title">Камарумс: Реальность</div>
+  <div class="slide-subtitle">Вот что я знаю. Вот что не знаю.<br>Как это исправим вместе.</div>
+  <div class="quote">28 марта 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION A: Вот что я знаю
+     ═══════════════════════════════════════════════ -->
+
+<!-- Slide A1: Revenue -->
+<div class="slide" id="s1">
+  <div class="section-marker a">Часть A / Вот что я знаю</div>
+  <div class="big-number green">190M ₽</div>
+  <div class="metric-label">Выручка 2025 (ООО Пульс)</div>
+  <div class="slide-subtitle" style="margin-top:24px">Мы прибыльные. Это хорошая новость.</div>
+</div>
+
+<!-- Slide A2: Feb 2026 performance -->
+<div class="slide" id="s2">
+  <div class="section-marker a">Часть A / Вот что я знаю</div>
+  <div class="slide-title" style="font-size:36px; margin-bottom:40px">Февраль 2026: сильный месяц</div>
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="value" style="color: var(--green)">18 100 000&nbsp;₽</div>
+      <div class="label">Выручка</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">78%</div>
+      <div class="label">Загрузка</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">7 224&nbsp;₽</div>
+      <div class="label">ADR (средний тариф)</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">5 613&nbsp;₽</div>
+      <div class="label">RevPAR</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="color: var(--green)">+14.6%</div>
+      <div class="label">vs план</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">25.4%</div>
+      <div class="label">Маржа</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide A3: Guest ratings -->
+<div class="slide" id="s3">
+  <div class="section-marker a">Часть A / Вот что я знаю</div>
+  <div class="slide-title" style="font-size:36px; margin-bottom:40px">Гости нас любят</div>
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="value" style="color: var(--green)">9.4</div>
+      <div class="label">Booking.com</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="color: var(--green)">5.0</div>
+      <div class="label">Яндекс</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="color: var(--green)">4.8</div>
+      <div class="label">2ГИС (392 отзыва)</div>
+    </div>
+  </div>
+  <div class="slide-subtitle" style="margin-top:32px">"Лучший отель 2025" на 2ГИС. "Хорошее место 2026" на Яндексе.</div>
+</div>
+
+<!-- Slide A4: Team -->
+<div class="slide" id="s4">
+  <div class="section-marker a">Часть A / Вот что я знаю</div>
+  <div class="slide-title" style="font-size:36px; margin-bottom:40px">Команда</div>
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="value">110</div>
+      <div class="label">Сотрудников</div>
+    </div>
+    <div class="metric-card">
+      <div class="value">1.02</div>
+      <div class="label">Сотрудников на номер</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="color: var(--green)">Бережливо</div>
+      <div class="label">Норма 4★: 1.5-2.0</div>
+    </div>
+  </div>
+  <div class="slide-subtitle" style="margin-top:32px">Отель 56 + СПА 20 + Ресторан 38</div>
+</div>
+
+<!-- Slide A5: Margin + historical context -->
+<div class="slide dark" id="s5">
+  <div class="section-marker a">Часть A / Вот что я знаю</div>
+  <div class="slide-title" style="font-size:32px; margin-bottom:16px">Маржа: работает, но падает</div>
+  <div class="metric-grid" style="grid-template-columns: repeat(2, 1fr); max-width:500px; margin-bottom:24px">
+    <div class="metric-card">
+      <div class="value" style="color: var(--gold)">20.2%</div>
+      <div class="label">Маржа 2025</div>
+    </div>
+    <div class="metric-card">
+      <div class="value" style="color: var(--text-muted)">35.4%</div>
+      <div class="label">Пик (2022)</div>
+    </div>
+  </div>
+  <div class="chart-wrap"><canvas id="chartMargin"></canvas></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION B: Вот что я НЕ знаю
+     ═══════════════════════════════════════════════ -->
+
+<!-- Slide B0: Section title -->
+<div class="slide dark" id="s6">
+  <div class="section-marker b">Часть B</div>
+  <div class="slide-title">Вот что я НЕ знаю</div>
+  <div class="slide-subtitle">12 вопросов о нашем отеле,<br>на которые я не могу ответить.</div>
+</div>
+
+<!-- Slides B1-B12: Individual questions -->
+
+<div class="slide accent" id="s7">
+  <div class="question-number">Вопрос 1 из 12</div>
+  <div class="question-text">Какая скорость WiFi для гостей? А для сотрудников?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s8">
+  <div class="question-number">Вопрос 2 из 12</div>
+  <div class="question-text">Сколько процентов сотрудников уволилось за последний год?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s9">
+  <div class="question-number">Вопрос 3 из 12</div>
+  <div class="question-text">Какой средний стаж работы в отеле?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s10">
+  <div class="question-number">Вопрос 4 из 12</div>
+  <div class="question-text">Сколько новых сотрудников уходит в первые 90 дней?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s11">
+  <div class="question-number">Вопрос 5 из 12</div>
+  <div class="question-text">Какой процент бронирований напрямую, без комиссии OTA?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s12">
+  <div class="question-number">Вопрос 6 из 12</div>
+  <div class="question-text">Какой процент гостей возвращается повторно?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s13">
+  <div class="question-number">Вопрос 7 из 12</div>
+  <div class="question-text">Сколько часов обучения получает каждый сотрудник в год?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s14">
+  <div class="question-number">Вопрос 8 из 12</div>
+  <div class="question-text">Какая средняя продолжительность проживания?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s15">
+  <div class="question-number">Вопрос 9 из 12</div>
+  <div class="question-text">За сколько времени решается жалоба гостя?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s16">
+  <div class="question-number">Вопрос 10 из 12</div>
+  <div class="question-text">На сколько процентов отзывов мы отвечаем?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s17">
+  <div class="question-number">Вопрос 11 из 12</div>
+  <div class="question-text">Как загрузка будет выглядеть через 30/60/90 дней?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+<div class="slide accent" id="s18">
+  <div class="question-number">Вопрос 12 из 12</div>
+  <div class="question-text">Какой процент доходов от конференц-залов?</div>
+  <div class="question-answer">Не знаю.</div>
+</div>
+
+
+<!-- Slide B13: The admission -->
+<div class="slide dark" id="s19">
+  <div class="section-marker b">Часть B / Вот что я не знаю</div>
+  <div class="quote" style="font-size:32px; opacity:1; font-style:normal; font-weight:400; max-width:800px">
+    Я не знаю ответы на эти вопросы.<br><br>
+    И это не ваша вина.<br><br>
+    Это моя задача. Создать систему,<br>где мы все видим реальность.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION C: Как это исправим вместе
+     ═══════════════════════════════════════════════ -->
+
+<!-- Slide C1: The framework -->
+<div class="slide dark" id="s20">
+  <div class="section-marker c">Часть C / Как это исправим вместе</div>
+  <div class="slide-title" style="font-size:36px; margin-bottom:40px">Что измеряют лучшие отели мира</div>
+  <div class="big-number gold">51</div>
+  <div class="metric-label">Метрика</div>
+  <div class="slide-subtitle" style="margin-top:24px">STR, USALI, Cornell, Culture Amp, McKinsey</div>
+</div>
+
+<!-- Slide C2: The gap -->
+<div class="slide dark" id="s21">
+  <div class="section-marker c">Часть C / Как это исправим вместе</div>
+  <div class="big-number coral">73%</div>
+  <div class="metric-label" style="margin-bottom:40px">Мы не видим</div>
+
+  <table class="gap-table">
+    <thead>
+      <tr>
+        <th>Категория</th>
+        <th>Всего</th>
+        <th>Есть</th>
+        <th>Можем</th>
+        <th>Нет</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Дашборд (Tier 1)</td>
+        <td>12</td>
+        <td class="status-have">5</td>
+        <td class="status-calc">1</td>
+        <td class="status-gap">6</td>
+      </tr><tr>
+        <td>Операционные (Tier 2)</td>
+        <td>25</td>
+        <td class="status-have">2</td>
+        <td class="status-calc">1</td>
+        <td class="status-gap">22</td>
+      </tr><tr>
+        <td>Стратегические (Tier 3)</td>
+        <td>7</td>
+        <td class="status-have">0</td>
+        <td class="status-calc">2</td>
+        <td class="status-gap">5</td>
+      </tr><tr>
+        <td>Лидерство (Tier 4)</td>
+        <td>7</td>
+        <td class="status-have">0</td>
+        <td class="status-calc">3</td>
+        <td class="status-gap">4</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Итого</td>
+        <td>51</td>
+        <td class="status-have">7</td>
+        <td class="status-calc">7</td>
+        <td class="status-gap">37</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- Slide C3: The reframe -->
+<div class="slide" id="s22">
+  <div class="section-marker c">Часть C / Как это исправим вместе</div>
+  <div class="slide-title" style="font-size:36px">Мы прибыльные, не измеряя почти ничего.</div>
+  <div class="slide-subtitle" style="margin-top:24px; font-size:28px">Представьте, что будет, когда начнём.</div>
+</div>
+
+<!-- Slide C4: Metric ownership -->
+<div class="slide accent" id="s23">
+  <div class="section-marker c">Часть C / Как это исправим вместе</div>
+  <div class="slide-title" style="font-size:32px; margin-bottom:32px">Кто за что отвечает</div>
+  <div class="ownership-grid">
+    <div class="owner-card">
+      <div class="name">Людмила</div>
+      <div class="metrics">Текучесть, стаж, обучение, повторные гости, жалобы</div>
+    </div><div class="owner-card">
+      <div class="name">Наталья</div>
+      <div class="metrics">GOPPAR, себестоимость номера, маржинальность, комиссии OTA</div>
+    </div><div class="owner-card">
+      <div class="name">Семён</div>
+      <div class="metrics">WiFi скорость, конверсия сайта, интеграция систем, прогноз загрузки</div>
+    </div><div class="owner-card">
+      <div class="name">Эльвира</div>
+      <div class="metrics">Удержание новичков (90 дней), больничные, eNPS</div>
+    </div><div class="owner-card">
+      <div class="name">Светлана</div>
+      <div class="metrics">Конкурентные индексы (RGI/MPI/ARI), восстановление маржи</div>
+    </div><div class="owner-card">
+      <div class="name">Эд</div>
+      <div class="metrics">Скорость решений, завершение инициатив, энергия, каденс коммуникации</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide C5: The commitment -->
+<div class="slide dark" id="s24">
+  <div class="section-marker c">Часть C / Как это исправим вместе</div>
+  <div class="slide-title" style="font-size:36px; max-width:800px">
+    Я буду публиковать наши настоящие цифры.
+  </div>
+  <div class="slide-subtitle" style="margin-top:24px">
+    Не чтобы стыдить. Чтобы улучшать.
+  </div>
+</div>
+
+<!-- Slide C6: Timeline -->
+<div class="slide accent" id="s25">
+  <div class="section-marker c">Часть C / Как это исправим вместе</div>
+  <div class="slide-title" style="font-size:32px; margin-bottom:40px">30 дней. Закрыть пробелы.</div>
+  <div class="metric-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 600px">
+    <div class="metric-card" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1)">
+      <div class="value" style="color: var(--coral)">37</div>
+      <div class="label" style="color: var(--text-on-dark); opacity:0.6">Пробелов сейчас</div>
+    </div>
+    <div class="metric-card" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1)">
+      <div class="value" style="color: var(--green)">&lt;25</div>
+      <div class="label" style="color: var(--text-on-dark); opacity:0.6">Цель через 30 дней</div>
+    </div>
+  </div>
+  <div class="slide-subtitle" style="margin-top:32px">Ежемесячные обновления. Прозрачность навсегда.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     DISCUSSION
+     ═══════════════════════════════════════════════ -->
+<div class="slide" id="s26">
+  <div class="slide-title">Что вы думаете?</div>
+  <div class="slide-subtitle" style="font-size:22px; margin-top:16px">
+    Какие метрики я пропустил?<br>
+    Что я не вижу?<br>
+    Что вас удивило?
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     NAVIGATION
+     ═══════════════════════════════════════════════ -->
+<div class="nav-bar">
+  <div class="progress" id="progress"></div>
+  <span class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">27</span></span>
+  <span class="nav-hint">← → или клик для навигации</span>
+</div>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  document.getElementById('totalSlides').textContent = total;
+
+  function show(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    document.getElementById('currentSlide').textContent = current + 1;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); show(0); }
+    if (e.key === 'End') { e.preventDefault(); show(total - 1); }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.nav-bar')) return;
+    const x = e.clientX;
+    if (x > window.innerWidth / 2) show(current + 1);
+    else show(current - 1);
+  });
+
+  // Touch support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e) {
+    const diff = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(diff) > 50) {
+      if (diff < 0) show(current + 1);
+      else show(current - 1);
+    }
+  });
+
+  show(0);
+})();
+
+// ── Chart: Margin trend ──
+document.addEventListener('DOMContentLoaded', function() {
+  const marginCtx = document.getElementById('chartMargin');
+  if (marginCtx) {
+    new Chart(marginCtx, {
+      type: 'line',
+      data: {
+        labels: ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2025"],
+        datasets: [
+          {
+            label: 'Маржа %',
+            data: [34.6, 28.8, 42.7, 40.5, 38.9, 27.1, 31.9, 35.4, 20.2],
+            borderColor: '#D4A853',
+            backgroundColor: 'rgba(212,168,83,0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: '#D4A853',
+          },
+          {
+            label: 'Выручка (млн ₽)',
+            data: [34.8, 43.6, 50.1, 81.8, 102.3, 65.1, 104.2, 117.1, 189.985545],
+            borderColor: '#4FD215',
+            backgroundColor: 'transparent',
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: '#4FD215',
+            yAxisID: 'y1',
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            labels: { color: '#E8E5E0', font: { family: 'Stolzl', size: 13 } }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#9E9B97', font: { family: 'Stolzl' } },
+            grid: { color: 'rgba(255,255,255,0.05)' }
+          },
+          y: {
+            position: 'left',
+            ticks: {
+              color: '#D4A853',
+              font: { family: 'Stolzl' },
+              callback: function(v) { return v + '%'; }
+            },
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            min: 0,
+            max: 50,
+          },
+          y1: {
+            position: 'right',
+            ticks: {
+              color: '#4FD215',
+              font: { family: 'Stolzl' },
+              callback: function(v) { return v + 'M'; }
+            },
+            grid: { display: false },
+            min: 0,
+          }
+        }
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>
