@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Показатели — Камарумс</title>
-<meta name="description" content="Загрузка, RevPAR, средний тариф — помесячная динамика отеля Камарумс за 2025 год.">
+<meta name="description" content="Загрузка, RevPAR, средний тариф — помесячная динамика отеля Камарумс за 2026 год.">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Камарумс — Открытый отель">
@@ -643,26 +643,26 @@
   <p class="subtitle">
     Загрузка, доход на номер, средний тариф. Не средние по рынку — наши. Настоящие.
   </p>
-  <p class="freshness">Данные по состоянию на ноябрь 2025</p>
+  <p class="freshness">Данные по состоянию на февраль 2026</p>
 </div>
 
 <!-- KPI Summary Cards -->
 <div class="metric-grid">
   <div class="metric-card">
     <div class="label">RevPAR (среднее)</div>
-    <div class="value">4 664 ₽</div>
+    <div class="value">4 632 ₽</div>
     <div class="sublabel">Доход на доступный номер</div>
     <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Выручка номерного фонда ÷ Доступные номеро-ночи</div>
   </div>
   <div class="metric-card">
     <div class="label">Загрузка (среднее)</div>
-    <div class="value">67.6%</div>
-    <div class="sublabel">11 мес. 2025</div>
+    <div class="value">66.5%</div>
+    <div class="sublabel">2 мес. 2026</div>
     <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Проданные номеро-ночи ÷ Доступные × 100%</div>
   </div>
   <div class="metric-card">
     <div class="label">ADR (среднее)</div>
-    <div class="value">6 783 ₽</div>
+    <div class="value">6 930 ₽</div>
     <div class="sublabel">Средний тариф за номер</div>
     <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">= Выручка номерного фонда ÷ Проданные номеро-ночи</div>
   </div>
@@ -670,7 +670,7 @@
 
 <!-- Monthly Trend Chart -->
 <div class="chart-section">
-  <h3>Помесячная динамика — 2025</h3>
+  <h3>Помесячная динамика — 2026</h3>
   <div class="chart-controls">
     <div class="chart-tabs" id="perfTabs">
       <button class="active" onclick="showMetric('occupancy', this)">Загрузка</button>
@@ -716,7 +716,7 @@
 
 
 <footer>
-  <div class="freshness">Данные по состоянию на ноябрь 2025</div>
+  <div class="freshness">Данные по состоянию на февраль 2026</div>
   <p>
     <a href="https://kamarooms.com">kamarooms.com</a> · Набережные Челны · 108 номеров · 4★
   </p>
@@ -729,11 +729,11 @@
 
 <script>
 const ALL_DATA = {
-  labels: ["\u042f\u043d\u0432", "\u0424\u0435\u0432", "\u041c\u0430\u0440", "\u0410\u043f\u0440", "\u041c\u0430\u0439", "\u0418\u044e\u043d", "\u0418\u044e\u043b", "\u0410\u0432\u0433", "\u0421\u0435\u043d", "\u041e\u043a\u0442", "\u041d\u043e\u044f"],
-  occupancy: { data: [53, 72, 66, 59, 58, 69, 72, 76, 77, 74, 68], label: 'Загрузка (%)', color: '#D4A853', suffix: '%' },
-  revpar: { data: [3443, 5041, 4508, 3986, 4070, 4754, 4891, 5135, 5414, 5268, 4793], label: 'RevPAR (₽)', color: '#4FD215', suffix: ' ₽' },
-  adr: { data: [6505, 6413, 6786, 6771, 6678, 6711, 6767, 6792, 6996, 7112, 7084], label: 'ADR (₽)', color: '#FF8562', suffix: ' ₽' },
-  revenue: { data: [11.9, 14.4, 15.9, 13.3, 13.9, 16.0, 16.8, 17.6, 18.3, 18.5, 16.1], label: 'Выручка (млн ₽)', color: '#4A90D9', suffix: ' млн ₽' }
+  labels: ["\u042f\u043d\u0432", "\u0424\u0435\u0432"],
+  occupancy: { data: [55, 78], label: 'Загрузка (%)', color: '#D4A853', suffix: '%' },
+  revpar: { data: [3650, 5613], label: 'RevPAR (₽)', color: '#4FD215', suffix: ' ₽' },
+  adr: { data: [6636, 7224], label: 'ADR (₽)', color: '#FF8562', suffix: ' ₽' },
+  revenue: { data: [12.5, 18.1], label: 'Выручка (млн ₽)', color: '#4A90D9', suffix: ' млн ₽' }
 };
 
 let perfChart = null;
@@ -827,12 +827,12 @@ function createHistoryChart() {
         {
           type: 'line',
           label: 'Рентабельность (%)',
-          data: [34.6, 28.8, 42.7, 40.5, 38.9, 27.1, 31.9, 35.4, 21.0],
+          data: [34.6, 28.8, 42.7, 40.5, 38.9, 27.1, 31.9, 35.4, 20.2],
           borderColor: '#FF8562',
           backgroundColor: 'transparent',
           borderWidth: 3,
           pointRadius: 5,
-          pointBackgroundColor: [34.6, 28.8, 42.7, 40.5, 38.9, 27.1, 31.9, 35.4, 21.0].map(v => v < 25 ? '#FF8562' : '#4FD215'),
+          pointBackgroundColor: [34.6, 28.8, 42.7, 40.5, 38.9, 27.1, 31.9, 35.4, 20.2].map(v => v < 25 ? '#FF8562' : '#4FD215'),
           tension: 0.2,
           yAxisID: 'y1',
           order: 1
@@ -840,7 +840,7 @@ function createHistoryChart() {
         {
           type: 'bar',
           label: 'Выручка (млн ₽)',
-          data: [34.8, 43.6, 50.1, 81.8, 102.3, 65.1, 104.2, 117.1, 172.7],
+          data: [34.8, 43.6, 50.1, 81.8, 102.3, 65.1, 104.2, 117.1, 190.0],
           backgroundColor: '#4A90D920',
           borderColor: '#4A90D9',
           borderWidth: 1,

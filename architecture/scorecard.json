@@ -1,11 +1,44 @@
 {
   "meta": {
     "hotel": "Kamarooms",
-    "entity": "ООО Пульс",
+    "primary_entity": "ООО Пульс",
     "rooms": 108,
     "location": "Naberezhnye Chelny, Tatarstan",
     "currency": "RUB",
-    "updated": "2026-03-23"
+    "updated": "2026-03-24"
+  },
+  "entity_structure": {
+    "note": "Multi-entity group. Revenue and costs split across entities. Cross-entity allocation required for accurate margin analysis.",
+    "entities": [
+      {"name": "ООО Пульс", "function": "Hotel + SPA", "staff": 42, "staff_detail": "Hotel 26 (incl all admin/АУП) + SPA 16"},
+      {"name": "ООО Подсолнух", "function": "Restaurant Boho", "staff": 9},
+      {"name": "ИП Салимова", "function": "Restaurant Boho", "staff": 29},
+      {"name": "ИП Тагильцева", "function": "Housekeeping/service staff", "staff": 30, "staff_detail": "Hotel housekeeping 21 + SPA housekeeping 4 + Other hotel 5"},
+      {"name": "ИП Алексеева", "function": "External contractor", "staff": null},
+      {"name": "ИП Мухаметова", "function": "External contractor", "staff": null},
+      {"name": "ИП Гарипова", "function": "External contractor", "staff": null}
+    ],
+    "total_known_staff": 110,
+    "staff_by_function": {
+      "hotel": 56,
+      "spa": 20,
+      "restaurant": 38
+    },
+    "staff_per_room": {
+      "hotel_only": 0.52,
+      "hotel_plus_spa": 0.70,
+      "all_entities": 1.02
+    }
+  },
+  "revenue_decomposition_template": {
+    "note": "Structure for annual revenue decomposition. Actual values in private repo.",
+    "components": [
+      {"item": "Room revenue"},
+      {"item": "Restaurant breakfast (allocated to hotel)", "note": "Double-counted: also in restaurant entity"},
+      {"item": "OTA commissions", "note": "Commissions paid TO OTAs, baked into gross revenue"},
+      {"item": "Conference halls"},
+      {"item": "Additional services"}
+    ]
   },
   "core_kpis": [
     {
@@ -17,7 +50,8 @@
       "current": null,
       "target": null,
       "public": true,
-      "formula": "ADR × Occupancy"
+      "formula": "ADR × Occupancy",
+      "note": "ADR includes breakfast component."
     },
     {
       "id": "occupancy",
@@ -39,7 +73,8 @@
       "current": null,
       "target": null,
       "public": true,
-      "formula": "room_revenue / rooms_sold"
+      "formula": "room_revenue / rooms_sold",
+      "note": "Includes breakfast. Confirmed by GM."
     },
     {
       "id": "direct_booking_pct",
@@ -88,7 +123,8 @@
       "current": null,
       "target": null,
       "public": false,
-      "formula": "total_payroll / total_revenue"
+      "formula": "total_payroll / total_revenue",
+      "note": "Cross-entity: Пульс payroll covers hotel+SPA. ИП Тагильцева paid separately. Consolidation required."
     },
     {
       "id": "ota_commission_pct",
@@ -99,7 +135,7 @@
       "current": null,
       "target": null,
       "public": false,
-      "formula": "ota_commissions / ota_revenue"
+      "formula": "ota_commissions / total_puls_revenue"
     },
     {
       "id": "energy_cost_per_room",
@@ -122,6 +158,20 @@
       "target": null,
       "public": false,
       "formula": "total_revenue / headcount"
+    },
+    {
+      "id": "headcount",
+      "name": "Total Headcount",
+      "name_ru": "Численность персонала",
+      "unit": "people",
+      "source": "GM verified",
+      "current": 110,
+      "public": false,
+      "breakdown": {
+        "hotel": 56,
+        "spa": 20,
+        "restaurant": 38
+      }
     }
   ],
   "historical_monthly": {},
